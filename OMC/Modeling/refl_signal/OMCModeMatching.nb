@@ -1,0 +1,273 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7644,        263]
+NotebookOptionsPosition[      7025,        235]
+NotebookOutlinePosition[      7383,        251]
+CellTagsIndexPosition[      7340,        248]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["OMC Mode Matching Calculation", "Title",
+ CellChangeTimes->{{3.740325797338409*^9, 3.740325800225802*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["ABCD Setup", "Chapter",
+ CellChangeTimes->{{3.740325804305707*^9, 3.740325809682395*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"FreeSpace", "[", "d_", "]"}], "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "d"},
+      {"0", "1"}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "propagate", " ", "a", " ", "beam", " ", "in", " ", "free", " ", 
+     "space"}], ",", " ", 
+    RowBox[{
+    "or", " ", "constant", " ", "refractive", " ", "index", " ", "medium"}]}],
+    " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"FlatRefract", "[", 
+    RowBox[{"n1_", ",", "n2_"}], "]"}], "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "0"},
+      {"0", 
+       FractionBox["n1", "n2"]}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Refraction", " ", "at", " ", "a", " ", "flat", " ", "interface"}],
+    " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"CurvRefract", "[", 
+    RowBox[{"R_", ",", "n1_", ",", "n2_"}], "]"}], "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "0"},
+      {
+       FractionBox[
+        RowBox[{"n1", "-", "n2"}], 
+        RowBox[{"R", "*", "n2"}]], 
+       FractionBox["n1", "n2"]}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "Refraction", " ", "at", " ", "a", " ", "curved", " ", "interface"}], ";",
+     " ", 
+    RowBox[{"R", ">", 
+     RowBox[{"0", " ", "for", " ", "convex", " ", 
+      RowBox[{"(", 
+       RowBox[{
+       "center", " ", "of", " ", "curvature", " ", "after", " ", 
+        "interface"}], ")"}]}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"FlatReflect", "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "0"},
+      {"0", "1"}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "reflect", " ", "off", " ", "of", " ", "a", " ", "flat", " ", "mirror"}], 
+    ",", " ", 
+    RowBox[{
+    "only", " ", "valid", " ", "for", " ", "perpendicular", " ", "rays"}]}], 
+   " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"CurvReflecth", "[", 
+    RowBox[{"R_", ",", "\[Theta]_"}], "]"}], "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "0"},
+      {
+       FractionBox[
+        RowBox[{"-", "2"}], 
+        RowBox[{"R", " ", 
+         RowBox[{"Cos", "[", "\[Theta]", "]"}]}]], "1"}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Reflect", " ", "from", " ", "a", " ", "curved", " ", "mirror", " ", "at", 
+    " ", "angle", " ", "in", " ", "the", " ", "horizontal", " ", 
+    RowBox[{"(", "tangential", ")"}], " ", "plane"}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"CurvReflectv", "[", 
+    RowBox[{"R_", ",", "\[Theta]_"}], "]"}], "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "0"},
+      {
+       FractionBox[
+        RowBox[{
+         RowBox[{"-", "2"}], 
+         RowBox[{"Cos", "[", "\[Theta]", "]"}]}], "R"], "1"}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Reflect", " ", "from", " ", "a", " ", "curved", " ", "mirror", " ", "at", 
+    " ", "angle", " ", "in", " ", "the", " ", "vertical", " ", 
+    RowBox[{"(", "sagittal", ")"}], " ", "plane"}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"ThinLens", "[", "f_", "]"}], "=", 
+   RowBox[{"(", GridBox[{
+      {"1", "0"},
+      {
+       FractionBox[
+        RowBox[{"-", "1"}], "f"], "1"}
+     }], ")"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"f", ">", 
+     RowBox[{"0", " ", "is", " ", "convex", " ", 
+      RowBox[{"(", "converging", ")"}], " ", "lens"}]}], ";", " ", 
+    RowBox[{"f", ">>", "thickness"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"ThickLens", "[", 
+    RowBox[{"R1_", ",", "R2_", ",", "n1_", ",", "n2_"}], "]"}], "=", 
+   RowBox[{
+    RowBox[{"(", GridBox[{
+       {"1", "0"},
+       {
+        FractionBox[
+         RowBox[{"n2", "-", "n1"}], 
+         RowBox[{"R2", "*", "n1"}]], 
+        FractionBox["n2", "n1"]}
+      }], ")"}], ".", 
+    RowBox[{"(", GridBox[{
+       {"1", "t"},
+       {"0", "1"}
+      }], ")"}], ".", 
+    RowBox[{"(", GridBox[{
+       {"1", "0"},
+       {
+        FractionBox[
+         RowBox[{"n1", "-", "n2"}], 
+         RowBox[{"R1", "*", "n2"}]], 
+        FractionBox["n1", "n2"]}
+      }], ")"}]}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "t", " ", "is", " ", "center", " ", "thickness", " ", "of", " ", "the", 
+    " ", "lens"}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.740323892677421*^9, 3.740324105454192*^9}, {
+  3.7403241369137278`*^9, 3.740324341807068*^9}, {3.740325774093669*^9, 
+  3.7403257779314623`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Optics Parameters", "Chapter",
+ CellChangeTimes->{{3.740325816937372*^9, 3.7403258191218033`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Arms", "Section",
+ CellChangeTimes->{{3.7403258238501177`*^9, 3.740325825799081*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"w0", "="}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "spot", " ", "size", " ", "at", " ", "the", " ", "beam", " ", "waist"}], 
+   " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"zR", "="}], ";"}], 
+  RowBox[{"(*", "   ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"z", "="}], ";"}], " ", 
+  RowBox[{"(*", "   ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"w", "[", "z_", "]"}], "=", 
+    RowBox[{"w0", 
+     SqrtBox[
+      RowBox[{"1", "+", 
+       SuperscriptBox[
+        RowBox[{"(", 
+         FractionBox["z", "zR"], ")"}], "2"]}]]}]}], ";"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "spot", " ", "size", " ", "of", " ", "a", " ", "Gaussian", " ", "beam", 
+    " ", "at", " ", "z", " ", "away", " ", "from", " ", "the", " ", "waist"}],
+    " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"R", "[", "z_", "]"}], "=", 
+   RowBox[{"z", "+", 
+    FractionBox[
+     SuperscriptBox["zR", "2"], "z"]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Psi]", 
+    RowBox[{"(", "z", ")"}]}], "=", 
+   RowBox[{"ArcTan", "[", 
+    FractionBox["z", "zR"], "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.740325834082601*^9, 3.7403258595590467`*^9}, {
+  3.7403259704304*^9, 3.740326037467804*^9}}],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.740325985306519*^9, 3.740325985730695*^9}}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{808, 905},
+WindowMargins->{{Automatic, 10}, {Automatic, 0}},
+FrontEndVersion->"11.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+21, 2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 112, 1, 92, "Title"],
+Cell[CellGroupData[{
+Cell[717, 27, 95, 1, 65, "Chapter"],
+Cell[815, 30, 4441, 140, 502, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5293, 175, 104, 1, 65, "Chapter"],
+Cell[CellGroupData[{
+Cell[5422, 180, 91, 1, 64, "Section"],
+Cell[5516, 183, 1374, 44, 202, "Input"],
+Cell[6893, 229, 92, 1, 32, "Input"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
